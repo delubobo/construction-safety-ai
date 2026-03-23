@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+*.db
+*.db-wal
+*.db-shm
+
+# Model weights — never commit, too large
+model/weights/*.pt
+model/weights/*.pth
+model/weights/*.onnx
+
+# Sample images — local only
+data/sample_images/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
