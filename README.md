@@ -1,6 +1,17 @@
+---
+title: Construction Safety AI
+emoji: 🦺
+colorFrom: red
+colorTo: orange
+sdk: streamlit
+sdk_version: 1.35.0
+app_file: app.py
+pinned: false
+---
+
 # Construction Safety AI
 
-**Live demo:** *(link added after HF Spaces deploy)*
+**Live demo:** https://delubobo-construction-safety-ai.hf.space
 
 A computer vision tool that automatically detects PPE (Personal Protective Equipment) violations on construction sites using YOLOv8.
 
