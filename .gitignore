@@ -11,9 +11,15 @@ venv/
 model/weights/*.pt
 model/weights/*.pth
 model/weights/*.onnx
+*.pt
+*.pth
+*.onnx
 
-# Sample images — local only
-data/sample_images/
+# Local data — not committed
+data/sample_images/*
+data/safety_reports/*
+!data/sample_images/.gitkeep
+!data/safety_reports/.gitkeep
 
 # OS
 .DS_Store
