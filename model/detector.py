@@ -9,35 +9,49 @@ Direct output classes:
 
 No spatial/IoU logic needed — the model directly labels each detection
 as a violation or compliant item. This is the correct architecture.
+Uses direct HTTP requests to Roboflow serverless API — no heavy SDK dependency.
 """
 
 import os
+import base64
+import requests
 from typing import List, Dict
 
-from inference_sdk import InferenceHTTPClient
-
 from app.utils.violation_definitions import get_violation_info, is_violation, HIDDEN_CLASSES
+
+_ROBOFLOW_API_URL = "https://serverless.roboflow.com"
 
 
 class CloudPPEDetector:
     """
-    PPE detector using Roboflow's Serverless Inference API.
+    PPE detector using Roboflow's Serverless Inference API via direct HTTP.
     Set ROBOFLOW_API_KEY as an environment variable before running.
     """
 
     def __init__(self, confidence: float = 0.35):
-        api_key = os.environ.get("ROBOFLOW_API_KEY", "")
-        if not api_key:
+        self.api_key = os.environ.get("ROBOFLOW_API_KEY", "")
+        if not self.api_key:
             raise EnvironmentError(
                 "ROBOFLOW_API_KEY environment variable is not set. "
                 "Add it to your .env file."
             )
-        self.client = InferenceHTTPClient(
-            api_url="https://serverless.roboflow.com",
-            api_key=api_key,
-        )
         self.model_id = "construction-site-safety/27"
         self.confidence = confidence
+
+    def _call_api(self, image_path: str) -> dict:
+        """POST base64-encoded image to Roboflow serverless endpoint."""
+        with open(image_path, "rb") as f:
+            image_b64 = base64.b64encode(f.read()).decode("utf-8")
+        url = f"{_ROBOFLOW_API_URL}/{self.model_id}"
+        response = requests.post(
+            url,
+            params={"api_key": self.api_key},
+            data=image_b64,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            timeout=30,
+        )
+        response.raise_for_status()
+        return response.json()
 
     def detect(self, image_path: str) -> List[Dict]:
         """
@@ -47,7 +61,7 @@ class CloudPPEDetector:
             class, label, confidence, bbox [x1,y1,x2,y2],
             severity, corrective_action, is_violation
         """
-        api_response = self.client.infer(image_path, model_id=self.model_id)
+        api_response = self._call_api(image_path)
 
         if "predictions" not in api_response:
             return []
