@@ -22,14 +22,8 @@ A computer vision tool that automatically detects PPE violations on construction
 ### Upload & Detection
 ![Detection](docs/screenshots/detection.png)
 
-### Annotated Image with Bounding Boxes
-![Annotated](docs/screenshots/annotated.png)
-
 ### PDF Safety Report
 ![PDF Report](docs/screenshots/report.png)
-
-### Violation Trend Chart
-![Trend](docs/screenshots/trend.png)
 
 ---
 
